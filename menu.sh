@@ -13,7 +13,7 @@ menuOptions=("Log In" "Exit Program")
 sessionOptions=("New Session" "Exit Session Menu")
 
 #Processing variables
-count = 600      #changer à 600 en situation réelle
+count = 600000  #600,000 millisecondes
 start_time=0    #début (timeout)
 elapsed_time=0  #temps écoulé (timeout)
 
@@ -71,14 +71,14 @@ function runSession {
 		aws kinesis put-record --stream-name MicsaDataStreaming --data $DATA --partition-key data
 		echo "$DATA"
 		#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
-		if [ "$DATA" -eq 0 ] && [ "$elapsed_time" -eq 0 ]; then
-			$start_time=$SECONDS
-			$elapsed_time=$(($SECONDS-$start_time))
-		elif [ "$DATA" -eq 0 ] && [ "$elapsed_time" -gt 0 ]; then
-			$elapsed_time=$(($SECONDS-$start_time))
-		elif [ "$DATA" -gt 0 ]; then
-			$start_time=0
-			$elapsed_time=0
+        if [ "$DATA" -eq 0 ] && [ "$elapsed_time" -eq 0 ]; then
+            $start_time=date +%s%N | cut -b1-13
+            $elapsed_time=$(((date +%s%N | cut -b1-13)-$start_time))
+        elif [ "$DATA" -eq 0 ] && [ "$elapsed_time" -gt 0 ]; then
+            $elapsed_time=$(((date +%s%N | cut -b1-13)-$start_time))
+        elif [ "$DATA" -gt 0 ]; then
+            $start_time=0
+            $elapsed_time=0
 		fi
 		done
 	elif [ "$key" = "t"]; 
