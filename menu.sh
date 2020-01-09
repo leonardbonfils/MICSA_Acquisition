@@ -63,9 +63,9 @@ function runSession {
     #Session close (if key is pressed)
     read -n1 -r -p "Press S to start and T to terminate" key
     if [ "$key" = "s" ]; then
+		read -n1 -r -p "Press S to start and T to terminate" key &
 		while ["$elapsed_time" -lt "$count" && "$key" != "t" ]; do
 		#Keep track of length of time without an input read
-		read -n1 -r -p "Press S to start and T to terminate" key
 		READ=`dd if=/dev/ttyUSB0 time = 600 | sed 's/ /*/g'`
 		DATA=$(echo $READ | sed 's/ /,/g')
 		aws kinesis put-record --stream-name MicsaDataStreaming --data $DATA --partition-key data
