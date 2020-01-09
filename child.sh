@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Fonction qui s'execute lorsque le process child a recu un signal d'arret par le parent
+# Utiliser cette fonction pour faire le menage au besoin...
+function arreter_processus()
+{
+    echo ">> Signal d'interruption du child recu"
+    # Ne pas oublier de sortir du script child a la fin
+    exit
+}
+
+# Cette commande intercepte le signal envoye par la commande "kill" du parent. Lorsque le signal
+# est intercepté, la fonction arreter_processus est appelee.
+trap arreter_processus SIGTERM
+
+
+
+# On releve le ID du parent
+PARENT_PID=$(ps $$ -o ppid=)
+echo ">> Processus child démarre avec PID : $$, le PID du parent $PARENT_PID"
+
+# boucle infinie (pour simuler les releves a partir de tty0
+while :
+do
+  echo "Je releve une valeur" >> releve.txt
+  sleep 1
+done
+
+# Supposons que le processus child se termine, si il faut aussi que le parent se termine: 
+# kill $PARENT_PID
