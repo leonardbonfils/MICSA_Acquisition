@@ -59,6 +59,7 @@ done
 function runSession {
     
     echo "New session is in progress. Serial data is being recorded."
+<<<<<<< HEAD
     while [ 1 ]
     do
         read -n1 -r -p "Press S to start and T to terminate " key
@@ -67,6 +68,15 @@ function runSession {
         echo "You're in!"
 		while [ $elapsed_time -lt $count ]; do
         echo "Made it past while loop condition"
+=======
+    #echo "Press any key to close session."
+    #Session close (if key is pressed)
+    read -n1 -r -p "Press S to start and T to terminate" key
+    if [ "$key" = "s" ]; then
+		read -n1 -r -p "Press S to start and T to terminate" key &
+		while ["$elapsed_time" -lt "$count" && "$key" != "t" ]; do
+		#Keep track of length of time without an input read
+>>>>>>> origin/master
 		READ=`dd if=/dev/ttyUSB0 time = 600 | sed 's/ /*/g'`
 		DATA=$(echo $READ | sed 's/ /,/g')
 		aws kinesis put-record --stream-name MicsaDataStreaming --data $DATA --partition-key data
