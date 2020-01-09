@@ -14,8 +14,8 @@ sessionOptions=("New Session" "Exit Session Menu")
 
 #Processing variables
 count = 600000  #600,000 millisecondes
-start_time=0    #début (timeout)
-elapsed_time=0  #temps écoulé (timeout)
+start_time = 0    #début (timeout)
+elapsed_time = 0  #temps écoulé (timeout)
 
 CHOICE=$(dialog --clear \
                 --backtitle "$BACKTITLE" \
@@ -59,32 +59,34 @@ done
 function runSession {
     
     echo "New session is in progress. Serial data is being recorded."
-    #echo "Press any key to close session."
-    #Session close (if key is pressed)
-    read -n1 -r -p "Press S to start and T to terminate" key
-    if [ "$key" = "s" ]; then
-		while ["$elapsed_time" -lt "$count" && "$key" != "t" ]; do
-		#Keep track of length of time without an input read
-		read -n1 -r -p "Press S to start and T to terminate" key
+    while [ 1 ]
+    do
+        read -n1 -r -p "Press S to start and T to terminate " key
+    done
+    ( if [ "$key" == "s" ]; then
+        echo "You're in!"
+		while [ $elapsed_time -lt $count ]; do
+        echo "Made it past while loop condition"
 		READ=`dd if=/dev/ttyUSB0 time = 600 | sed 's/ /*/g'`
 		DATA=$(echo $READ | sed 's/ /,/g')
 		aws kinesis put-record --stream-name MicsaDataStreaming --data $DATA --partition-key data
 		echo "$DATA"
 		#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
-        if [ "$DATA" -eq 0 ] && [ "$elapsed_time" -eq 0 ]; then
-            $start_time=date +%s%N | cut -b1-13
-            $elapsed_time=$(((date +%s%N | cut -b1-13)-$start_time))
-        elif [ "$DATA" -eq 0 ] && [ "$elapsed_time" -gt 0 ]; then
-            $elapsed_time=$(((date +%s%N | cut -b1-13)-$start_time))
-        elif [ "$DATA" -gt 0 ]; then
-            $start_time=0
-            $elapsed_time=0
+        if [ -z "$DATA" ] && [ "$elapsed_time" -eq 0 ]; then
+            $start_time = date +%s%N | cut -b1-13
+            $elapsed_time = $(((date +%s%N | cut -b1-13)-$start_time))
+        elif [ -z "$DATA" ] && [ "$elapsed_time" -gt 0 ]; then
+            $elapsed_time = $(((date +%s%N | cut -b1-13)-$start_time))
+        else
+            start_time = 0
+            elapsed_time = 0
 		fi
 		done
-	elif [ "$key" = "t"]; 
-		exit session
-    fi
-	
+	elif [ "$key" == "t" ]; then
+		return
+    else
+        echo "Unknown"
+    fi )
 }
 
 ## START OF MAIN PROGRAM
