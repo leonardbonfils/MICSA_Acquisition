@@ -33,6 +33,7 @@ while [ "$elapsed_time" -lt "$count" ]; do
 	#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
     if [ -z "$DATA" ] && [ "$elapsed_time" -eq 0 ]; then
             $start_time=$SECONDS
+			sleep 1
             $elapsed_time=$(($SECONDS - $start_time))
         elif [ -z "$DATA" ] && [ "$elapsed_time" -gt 0 ]; then
             $elapsed_time=$(($SECONDS-$start_time))
