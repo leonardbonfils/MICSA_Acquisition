@@ -44,11 +44,11 @@ function runSession {
     echo "New session is in progress. Serial data is being recorded."
 	while :
     do
-		read -n1 -r -p "Press S to start and T to terminate" key
+		read -n1 -r -p "Press s to start and t to terminate" key
 		if [ "$key" = "s" ]; then
 			# La variable $! nous donne le PID du dernier sous-processus demarre
 			# Le & a la fin de la commande demarre le processus en backgroup (donc en parallele)
-			./menu_child.sh &
+			./menuChild.sh &
 			CHILD_PID=$!
             echo "Processus child demarre avec PID: $CHILD_PID"
 		elif [ "$key" = "t" ]; then
@@ -68,7 +68,6 @@ function runSession {
 
 
 ## START MAIN PROGRAM 
-echo "Processus child demarre avec PID: $CHILD_PID"
 select opt in "${menuOptions[@]}"
 do
     case $opt in
@@ -93,6 +92,7 @@ do
 done
 
 echo "Execution du parent terminee"
+
 
 
 

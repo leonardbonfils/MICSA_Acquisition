@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #Processing variables
-count = 600000  #600,000 millisecondes
-start_time = 0    #début (timeout)
-elapsed_time = 0  #temps écoulé (timeout)
+count=600000  #600,000 millisecondes
+start_time=0    #début (timeout)
+elapsed_time=0  #temps écoulé (timeout)
 
 # Fonction qui s'execute lorsque le process child a recu un signal d'arret par le parent
 # Utiliser cette fonction pour faire le menage au besoin...
@@ -24,7 +24,7 @@ PARENT_PID=$(ps $$ -o ppid=)
 echo ">> Processus child démarre avec PID : $$, le PID du parent $PARENT_PID"
 
 # boucle infinie (pour simuler les releves a partir de USB0
-while ["$elapsed_time" -lt "$count"]; do
+while [ "$elapsed_time" -lt "$count" ]; do
 	#Keep track of length of time without an input read
 	READ=`dd if=/dev/ttyUSB0 time = 600 | sed 's/ /*/g'`
 	DATA=$(echo $READ | sed 's/ /,/g')
@@ -32,14 +32,14 @@ while ["$elapsed_time" -lt "$count"]; do
 	echo "$DATA"
 	#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
     if [ -z "$DATA" ] && [ "$elapsed_time" -eq 0 ]; then
-            $start_time = date +%s%N | cut -b1-13
-            $elapsed_time = $(((date +%s%N | cut -b1-13)-$start_time))
+            $start_time = $(date +%S) | cut -b1-13
+            $elapsed_time = $((($(date +%S) | cut -b1-13)-$start_time))
         elif [ -z "$DATA" ] && [ "$elapsed_time" -gt 0 ]; then
-            $elapsed_time = $(((date +%s%N | cut -b1-13)-$start_time))
+            $elapsed_time = $((($(date +%S) | cut -b1-13)-$start_time))
         else
-            start_time = 0
-            elapsed_time = 0
-		fi
+            $start_time = 0
+            $elapsed_time = 0
+	fi
 done
 
 arreter_processus
