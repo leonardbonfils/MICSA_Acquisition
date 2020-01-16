@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# Choix de menus
+menuOptions=("Log In" "Exit Program")
+sessionOptions=("New Session" "Exit Session Menu")
+
 # La variable $$ nous donne toujours le PID du processus actuel
 echo "Processus parent demarre avec PID: $$"
 
 
-## FUNCTIONS DEFINITIONS
+## FUNCTIONS DEFINITIONS ##
+
 #Close application
 function quit {
     exit
@@ -18,7 +23,7 @@ do
         "New Session")
 			aws kinesis create-stream --stream-name MicsaDataStreaming --shard-count 1
             runSession
-			exit session
+			return
             ;;
         "Exit Session Menu")
             echo "Back to main menu"
@@ -37,14 +42,16 @@ done
 function runSession {
     #Function read user input continously
     echo "New session is in progress. Serial data is being recorded."
-	while[1]; do
+	while :
+    do
 		read -n1 -r -p "Press S to start and T to terminate" key
 		if [ "$key" = "s" ]; then
 			# La variable $! nous donne le PID du dernier sous-processus demarre
 			# Le & a la fin de la commande demarre le processus en backgroup (donc en parallele)
-			./child.sh &
+			./menu_child.sh &
 			CHILD_PID=$!
-		elif [ "$key" = "t"];
+            echo "Processus child demarre avec PID: $CHILD_PID"
+		elif [ "$key" = "t" ]; then
 			# A la fin du programme il faut tuer le process child. Il ne se tue pas tout seul car le sous-process
 			# qu'on a demarre dans le background n'est pas un sous-processus de parent.sh mais du shell. 
 			kill $CHILD_PID
@@ -52,7 +59,7 @@ function runSession {
 			aws kinesis delete-stream --stream-name MicsaDataStreaming
 			#Exit function
 			echo "Recording terminated."
-			exit runSession
+			return
 		fi
 	done
 }
@@ -86,7 +93,6 @@ do
 done
 
 echo "Execution du parent terminee"
-
 
 
 
