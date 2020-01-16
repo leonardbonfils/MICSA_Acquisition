@@ -32,13 +32,13 @@ while [ "$elapsed_time" -lt "$count" ]; do
 	echo "$DATA"
 	#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
     if [ -z "$DATA" ] && [ "$elapsed_time" -eq 0 ]; then
-            $start_time = $(date +%S) | cut -b1-13
-            $elapsed_time = $((($(date +%S) | cut -b1-13)-$start_time))
+            $start_time=$SECONDS
+            $elapsed_time=$(($SECONDS - $start_time))
         elif [ -z "$DATA" ] && [ "$elapsed_time" -gt 0 ]; then
-            $elapsed_time = $((($(date +%S) | cut -b1-13)-$start_time))
+            $elapsed_time=$(($SECONDS-$start_time))
         else
-            $start_time = 0
-            $elapsed_time = 0
+            $start_time=0
+            $elapsed_time=0
 	fi
 done
 
