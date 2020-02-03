@@ -2,8 +2,8 @@
 
 #Processing variables
 count=600000  #600,000 millisecondes
-start_time=0    #début (timeout)
-elapsed_time=0  #temps écoulé (timeout)
+starttime=0    #début (timeout)
+elapsedtime=0  #temps écoulé (timeout)
 
 # Fonction qui s'execute lorsque le process child a recu un signal d'arret par le parent
 # Utiliser cette fonction pour faire le menage au besoin...
@@ -33,16 +33,13 @@ while [ "$elapsed_time" -lt "$count" ]; do
 	#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
     if [ -z "$DATA" ] && [ "${elapsed_time}" -eq 0 ]; then
 			#TIMER MUSTE INIATIALISE TO BE USED
-			SECONDS=0
-            start_time=$SECONDS
-			sleep 1
-            elapsed_time=$(($SECONDS - $start_time))
+            starttime=$SECONDS
+            elapsedtime=$(($SECONDS - $start_time))
         elif [ -z "$DATA" ] && [ "${elapsed_time}" -gt 0 ]; then
-            elapsed_time=$(($SECONDS-$start_time))
+            elapsedtime=$(($SECONDS-$start_time))
         else
-			SECONDS=0
-            start_time=0
-            elapsed_time=0
+            starttime=0
+            elapsedtime=0
 	fi
 done
 
