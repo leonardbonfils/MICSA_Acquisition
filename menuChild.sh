@@ -31,7 +31,7 @@ while [ "$elapsed_time" -lt "$count" ]; do
 	aws kinesis put-record --stream-name MicsaDataStreaming --data $DATA --partition-key data
 	echo "$DATA"
 	#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
-    if [ -z "$DATA" ] && [ "$elapsed_time" -eq 0 ]; then
+    if [ -z "$DATA" ] && [ "${elapsed_time}" -eq 0 ]; then
 			#TIMER MUSTE INIATIALISE TO BE USED
 			SECONDS=0
             start_time=$SECONDS
