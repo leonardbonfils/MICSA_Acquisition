@@ -22,9 +22,8 @@ trap arreter_processus SIGTERM
 # On releve le ID du parent
 PARENT_PID=$(ps $$ -o ppid=)
 echo ">> Processus child démarre avec PID : $$, le PID du parent $PARENT_PID"
-
 # boucle infinie (pour simuler les releves a partir de USB0
-while [ "$elapsed_time" -lt "$count" ]; do
+while [1]; do
 	#Keep track of length of time without an input read
 	READ=`dd if=/dev/ttyUSB0 count=1000 | sed 's/ /*/g'`
 	DATA=$(echo $READ | sed 's/ /,/g')
