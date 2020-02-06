@@ -28,10 +28,12 @@ while [ "$elapsed_time" -lt "$count" ]; do
 	#Keep track of length of time without an input read
 	READ=`dd if=/dev/ttyUSB0 count=1000 | sed 's/ /*/g'`
 	DATA=$(echo $READ | sed 's/ /,/g')
-	echo "$DATA"
 	echo 'LOADING DATA...'
 	aws kinesis put-record --stream-name MicsaDataStreaming --data $DATA --partition-key data
 	#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
+	echo 'Following value is data:'
+	echo "$DATA"
+	echo
 done
 
 arreter_processus
