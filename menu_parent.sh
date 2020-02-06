@@ -24,6 +24,7 @@ do
 			aws kinesis create-stream --stream-name MicsaDataStreaming --shard-count 1
 			echo 'Creating stream...please wait'
 			sleep 10
+			echo 'Stream created'
             runSession
 			return
             ;;
