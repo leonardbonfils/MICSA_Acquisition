@@ -26,21 +26,12 @@ echo ">> Processus child démarre avec PID : $$, le PID du parent $PARENT_PID"
 # boucle infinie (pour simuler les releves a partir de USB0
 while [ "$elapsed_time" -lt "$count" ]; do
 	#Keep track of length of time without an input read
-	READ=`dd if=/dev/ttyUSB0 time = 600 | sed 's/ /*/g'`
+	READ=`dd if=/dev/ttyUSB0 count=1000 | sed 's/ /*/g'`
 	DATA=$(echo $READ | sed 's/ /,/g')
-	aws kinesis put-record --stream-name MicsaDataStreaming --data $DATA --partition-key data
 	echo "$DATA"
+	echo 'LOADING DATA...'
+	aws kinesis put-record --stream-name MicsaDataStreaming --data $DATA --partition-key data
 	#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
-    if [ -z "$DATA" ] && [ "${elapsed_time}" -eq 0 ]; then
-			#TIMER MUSTE INIATIALISE TO BE USED
-            starttime=$SECONDS
-            elapsedtime=$(($SECONDS - $start_time))
-        elif [ -z "$DATA" ] && [ "${elapsed_time}" -gt 0 ]; then
-            elapsedtime=$(($SECONDS-$start_time))
-        else
-            starttime=0
-            elapsedtime=0
-	fi
 done
 
 arreter_processus

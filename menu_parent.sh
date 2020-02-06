@@ -22,6 +22,8 @@ do
     case $opt in
         "New Session")
 			aws kinesis create-stream --stream-name MicsaDataStreaming --shard-count 1
+			echo 'Creating stream...please wait'
+			sleep 10
             runSession
 			return
             ;;
