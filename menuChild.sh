@@ -26,7 +26,7 @@ echo ">> Processus child démarre avec PID : $$, le PID du parent $PARENT_PID"
 while [1]; do
 	#Keep track of length of time without an input read
 	READ=`dd if=/dev/ttyUSB0 count=1000 | sed 's/ /*/g'`
-	DATA=$(echo $READ | sed 's/ /,/g')
+	DATA=$(echo $READ | sed 's/ //g')
 	echo 'LOADING DATA...'
 	aws kinesis put-record --stream-name MicsaDataStreaming --data $DATA --partition-key data
 	#Long-term, we could use the optional --sequence-number-for-ordering parameter, which guarantees proper ordering of outgoing data
