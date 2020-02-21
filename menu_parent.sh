@@ -5,7 +5,7 @@ menuOptions=("Log In" "Exit Program")
 sessionOptions=("New Session" "Exit Session Menu")
 
 # La variable $$ nous donne toujours le PID du processus actuel
-echo "Processus parent demarre avec PID: $$"
+printf "\n----- Processus parent demarre avec PID: $$ -----\n\n"
 
 
 ## FUNCTIONS DEFINITIONS ##
@@ -75,16 +75,28 @@ select opt in "${menuOptions[@]}"
 do
     case $opt in
         "Log In")
-            echo "Please enter your username and password (a space between the two): "
-            read existingUSN existingPW
-            if grep -q "$existingUSN $existingPW" users.txt
-            then
-                echo "Successfully authenticated."
-                echo "Session Menu:"
-                session
-            else
-                echo "Invalid Credentials."
-            fi
+            printf "\nPlease enter your username: "
+            read micsaUser
+            printf "Please enter your password: "
+            unset password;
+            while IFS= read -r -s -n1 charInput; do
+                if [[ -z $charInput ]]; then
+                    if [[ -z $password ]]; then
+                        printf "\nPlease enter a non-empty password: "
+                    else
+                        break;
+                    fi
+                else
+                    echo -n '*'
+                    password+=$charInput
+                fi
+            done
+            ## Ici, nous devrons ajouter le calcul du hash du password rentré
+            ## Puis, envoyer ce hash à la base de données de Patrick
+            ## et analyser la réponse de la DB pour déterminer si l'utilisateur existe
+            printf "\n----- Successfully authenticated. -----"
+            printf "\n\nSession Menu:\n"
+            session
             ;;
         "Exit Program")
             quit
@@ -95,10 +107,3 @@ do
 done
 
 echo "Execution du parent terminee"
-
-
-
-
-
-
-
