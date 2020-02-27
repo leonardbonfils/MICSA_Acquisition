@@ -45,10 +45,13 @@ function runSession {
     do
 		read -n1 -r -p "Press s to start and t to  : " key
 		if [ "$key" = "s" ]; then
-			python producer.py
+			# La variable $! nous donne le PID du dernier sous-processus demarre
+			# Le & a la fin de la commande demarre le processus en backgroup (donc en parallele)
+			./menuChild.sh &
+			CHILD_PID=$!
+            echo "Processus child demarre avec PID: $CHILD_PID"
             echo "Recording started"
 		elif [ "$key" = "t" ]; then
-			pkill -f producer.py
 			echo "Recording terminated."
 			return
 		fi
