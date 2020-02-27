@@ -7,8 +7,7 @@
 function arreter_processus()
 {
     echo ">> Signal d'interruption du child recu"
-	pkill -f producer.
-	sleep 2
+	pkill -f producer.py
     # Ne pas oublier de sortir du script child a la fin
     exit
 }
@@ -22,7 +21,7 @@ trap arreter_processus SIGTERM
 PARENT_PID=$(ps $$ -o ppid=)
 echo ">> Processus child démarre avec PID : $$, le PID du parent $PARENT_PID"
 python producer.py
-sleep infinity  
+sleep infinity
 
 arreter_processus
 
