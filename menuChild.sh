@@ -1,14 +1,12 @@
 #!/bin/bash
 
-
-
 # Fonction qui s'execute lorsque le process child a recu un signal d'arret par le parent
 # Utiliser cette fonction pour faire le menage au besoin...
 function arreter_processus()
 {
     echo ">> Signal d'interruption du child recu"
-	pkill -f producer.
-	sleep 2
+    pkill -f producer.py
+    #kill $(pgrep -f 'python test.py')
     # Ne pas oublier de sortir du script child a la fin
     exit
 }
@@ -21,10 +19,10 @@ trap arreter_processus SIGTERM
 # On releve le ID du parent
 PARENT_PID=$(ps $$ -o ppid=)
 echo ">> Processus child démarre avec PID : $$, le PID du parent $PARENT_PID"
-python producer.py
-sleep infinity  
-
-arreter_processus
+python producer.py &
+PYTHON_PID=$!
+wait
+#arreter_processus
 
 
 # Supposons que le processus child se termine, si il faut aussi que le parent se termine: 

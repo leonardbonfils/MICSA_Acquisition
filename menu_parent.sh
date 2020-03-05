@@ -59,7 +59,7 @@ function runSession {
 			# qu'on a demarre dans le background n'est pas un sous-processus de parent.sh mais du shell. 
 			kill $CHILD_PID
 			#Stops AWS stream
-			aws kinesis delete-stream --stream-name MicsaDataStreaming
+			#aws kinesis delete-stream --stream-name MicsaDataStreaming
 			#Exit function
 			echo "Recording terminated."
 			return

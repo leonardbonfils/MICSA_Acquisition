@@ -52,6 +52,7 @@ function runSession {
             echo "Processus child demarre avec PID: $CHILD_PID"
             echo "Recording started"
 		elif [ "$key" = "t" ]; then
+			kill $CHILD_PID
 			echo "Recording terminated."
 			return
 		fi
