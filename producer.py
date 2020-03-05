@@ -11,7 +11,6 @@ topic = 'micsa_data'
 
 # Boucle
 while True:
-    #time.sleep(3)
     data = ser.readline()
     if data:
         print(data)

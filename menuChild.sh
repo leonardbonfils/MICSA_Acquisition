@@ -6,8 +6,6 @@ function arreter_processus()
 {
     echo ">> Signal d'interruption du child recu"
     pkill -f producer.py
-    #kill $(pgrep -f 'python test.py')
-    # Ne pas oublier de sortir du script child a la fin
     exit
 }
 
@@ -22,8 +20,6 @@ echo ">> Processus child démarre avec PID : $$, le PID du parent $PARENT_PID"
 python producer.py &
 PYTHON_PID=$!
 wait
-#arreter_processus
-
 
 # Supposons que le processus child se termine, si il faut aussi que le parent se termine: 
 # kill $PARENT_PID
