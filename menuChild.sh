@@ -15,11 +15,8 @@ trap arreter_processus SIGTERM
 
 
 # On releve le ID du parent
-PARENT_PID=$(ps $$ -o ppid=)
+# PARENT_PID=$(ps $$ -o ppid=) -- avec ou sans les '$$'
 #echo ">> Processus child démarre avec PID : $$, le PID du parent $PARENT_PID"
 python producer.py &
 PYTHON_PID=$!
 wait
-
-# Supposons que le processus child se termine, si il faut aussi que le parent se termine: 
-# kill $PARENT_PID
