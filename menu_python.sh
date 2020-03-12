@@ -51,7 +51,7 @@ function runSession {
 			# Le & a la fin de la commande demarre le processus en backgroup (donc en parallele)
 			./menuChild.sh &
 			CHILD_PID=$!
-            echo "Processus child demarre avec PID: $CHILD_PID"
+            printf "\nProcessus child demarre avec PID: $CHILD_PID\n"
             echo "Recording started"
 		elif [ "$key" = "t" ]; then
 			kill $CHILD_PID
