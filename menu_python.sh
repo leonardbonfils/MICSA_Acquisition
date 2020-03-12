@@ -41,7 +41,7 @@ done
 function runSession {
     #Function read user input continously
     firstPass=0
-    echo "New session is in progress. Serial data is being recorded."
+    printf "\nNew session is in progress. Serial data is being recorded.\n"
 	while :
     do
         stty -echo
@@ -56,12 +56,12 @@ function runSession {
 			# Le & a la fin de la commande demarre le processus en backgroup (donc en parallele)
 			./menuChild.sh &
 			CHILD_PID=$!
-            printf "\nProcessus child demarre avec PID: $CHILD_PID\n"
-            echo "Recording started"
+            #printf "\nProcessus child demarre avec PID: $CHILD_PID\n"
+            printf "\nRecording started"
 		elif [ "$key" = "t" ]; then
 			kill $CHILD_PID
 			stty echo
-			sleep 0.3
+			sleep 0.1
 			echo "Recording terminated."
 			return
 		fi
@@ -95,7 +95,7 @@ do
             ## Ici, nous devrons ajouter le calcul du hash du password rentré
             ## Puis, envoyer ce hash à la base de données de Patrick
             ## et analyser la réponse de la DB pour déterminer si l'utilisateur existe
-            printf "\n----- Successfully authenticated. -----"
+            printf "\n\n----- Successfully authenticated. -----"
             printf "\n\nSession Menu:\n"
             session
             ;;
