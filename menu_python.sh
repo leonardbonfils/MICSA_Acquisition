@@ -40,13 +40,18 @@ done
 #Begin recording session
 function runSession {
     #Function read user input continously
+    firstPass=0
     echo "New session is in progress. Serial data is being recorded."
 	while :
     do
-		stty -echo
-		read -n1 -r -p "Press s to start and t to  : " key
-		stty echo
+        stty -echo
+        if [ "$firstPass" -eq "0" ]; then
+	    echo "Press s to start and t to terminate: "
+            firstPass=1
+		fi
+	       read -n1 -r key
 		if [ "$key" = "s" ]; then
+			stty echo
 			# La variable $! nous donne le PID du dernier sous-processus demarre
 			# Le & a la fin de la commande demarre le processus en backgroup (donc en parallele)
 			./menuChild.sh &
@@ -55,6 +60,8 @@ function runSession {
             echo "Recording started"
 		elif [ "$key" = "t" ]; then
 			kill $CHILD_PID
+			stty echo
+			sleep 0.3
 			echo "Recording terminated."
 			return
 		fi
