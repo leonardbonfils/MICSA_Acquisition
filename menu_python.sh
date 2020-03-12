@@ -43,7 +43,9 @@ function runSession {
     echo "New session is in progress. Serial data is being recorded."
 	while :
     do
+		stty -echo
 		read -n1 -r -p "Press s to start and t to  : " key
+		stty echo
 		if [ "$key" = "s" ]; then
 			# La variable $! nous donne le PID du dernier sous-processus demarre
 			# Le & a la fin de la commande demarre le processus en backgroup (donc en parallele)
