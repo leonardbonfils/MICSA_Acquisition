@@ -1,5 +1,5 @@
 """#!/usr/bin/python"""
-#!"C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.8_3.8.752.0_x64__qbz5n2kfra8p0"
+#!C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.8_3.8.752.0_x64__qbz5n2kfra8p0
 
 # ------------------------------ Script Kafka Producer ------------------------------- #
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
@@ -9,7 +9,6 @@ import serial
 from json import dumps
 from time import sleep
 from kafka import KafkaProducer
-from kafka.errors import KafkaError
 
 # Parameters
 #ser = serial.Serial('/dev/ttyUSB0', 9600)
@@ -47,7 +46,8 @@ producer = KafkaProducer(\
 for e in range(10):
     data = {'number' : e}
     producer.send(topic, value=data)
-    sleep(5)
+    sleep(1)
+    print(e)
 
 # Producer data transmission - serial data
 """
