@@ -23,8 +23,8 @@ request_timeout_ms = 10000
 # ------------------------------------------------------------------------------------ #
 
 # Producer definition - very basic to run our initial tests
-producer = KafkaProducer(\
-    bootstrap_servers=serverIP,\
+producer = KafkaProducer( \
+    bootstrap_servers=serverIP, \
     value_serializer=lambda x:dumps(x).encode('utf-8'))
 
 # Producer definition - full definition
@@ -45,8 +45,9 @@ producer = KafkaProducer(\
 # Producer data transmission - test data
 for e in range(10):
     data = {'number' : e}
-    producer.send(topic, value=data)
-    sleep(1)
+    producer.send('micsaData', value=data)
+    producer.flush()
+    sleep(0.1)
     print(e)
 
 # Producer data transmission - serial data
