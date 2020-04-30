@@ -1,5 +1,5 @@
 """#!/usr/bin/python"""
-#!C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.8_3.8.752.0_x64__qbz5n2kfra8p0
+#!C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.7_3.7.2032.0_x64__qbz5n2kfra8p0
 
 # ------------------------------ Script Kafka Producer ------------------------------- #
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
@@ -45,7 +45,8 @@ producer = KafkaProducer(\
 # Producer data transmission - test data
 for e in range(10):
     data = {'number' : e}
-    producer.send('micsaData', value=data)
+    attempt = producer.send('micsaData', value=data)
+    result = attempt.get(timeout=60)
     producer.flush()
     sleep(0.1)
     print(e)
