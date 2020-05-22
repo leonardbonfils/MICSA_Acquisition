@@ -5,7 +5,8 @@
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
 
 # Libraries
-import serial 
+import serial
+import string
 from json import dumps
 from time import sleep
 from kafka import KafkaProducer
@@ -44,22 +45,24 @@ producer = KafkaProducer(\
 
 # Producer data transmission - test data
 for e in range(10):
-    data = {'number' : e}
+    data = 'Phrase\r\ntest\r'
+    data = data.replace('\r','').replace('\n','')
     attempt = producer.send('micsaData', value=data)
     result = attempt.get(timeout=60)
     producer.flush()
     sleep(0.1)
-    print(e)
 
 # Producer data transmission - serial data
-"""
+
 # Boucle
+"""
 while True:
     data = ser.readline()
     if data:
         print(data)
-        data=None
-        producer.send(b'')
+        data = data.replace('\r','').replace('\n','')
+        producer.send(topic, b'data')
+        sleep(2)
 """
 
 # Close the producer
