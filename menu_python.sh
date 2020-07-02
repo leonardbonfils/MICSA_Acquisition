@@ -21,7 +21,7 @@ function session {
 do
     case $opt in
         "New Session")
-            runSession
+            runSession "$1" "$2"
 			return
             ;;
         "Exit Session Menu")
@@ -54,7 +54,7 @@ function runSession {
 			stty echo
 			# La variable $! nous donne le PID du dernier sous-processus demarre
 			# Le & a la fin de la commande demarre le processus en backgroup (donc en parallele)
-			./menuChild.sh &
+			./menuChild.sh "$1" "$2" &
 			CHILD_PID=$!
             #printf "\nProcessus child demarre avec PID: $CHILD_PID\n"
             printf "\nRecording started"
@@ -97,7 +97,7 @@ do
             ## et analyser la réponse de la DB pour déterminer si l'utilisateur existe
             printf "\n\n----- Successfully authenticated. -----"
             printf "\n\nSession Menu:\n"
-            session
+            session "$micsaUser" "$password"
             ;;
         "Exit Program")
             quit

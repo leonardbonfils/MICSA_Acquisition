@@ -7,6 +7,7 @@
 # Libraries
 import serial
 import string
+import sys
 from json import dumps
 from json import loads
 from time import sleep
@@ -22,18 +23,13 @@ consumerTopic = 'micsaAuth'
 consumerGroup = 'pythonScript'
 request_timeout = 3
 
-# Envoyer un premier message avec user, pw (crypté) et id de la série donnée #
-# Réception d'un message du serveur Kafka (il faut faire un consumer) pour voir si l'identifiant est bon #
-# Si c'est bon, on envoie un combo "id série donnée" + donnée de la série #
-
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Producer definition -------------------------------- #
 # ------------------------------------------------------------------------------------ #
 
-# Producer definition
 producer = KafkaProducer( \
     bootstrap_servers=serverIP, \
-    value_serializer=lambda x:dumps(x).encode('utf-8'))
+    value_serializer=lambda x: dumps(x).encode('utf-8'))
 
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Consumer definition -------------------------------- #
@@ -42,10 +38,39 @@ producer = KafkaProducer( \
 consumer = KafkaConsumer(consumerTopic, \
     group_id=consumerGroup, \
     bootstrap_servers=serverIP, \
-    value_deserializer=lambda x: json.loads(x.decode ('utf-8')))
+    value_deserializer=lambda x: loads(x.decode ('utf-8')))
 
 # ------------------------------------------------------------------------------------ #
-# ------------------------------- Consumer reception --------------------------------- #
+# -------------------------- Send authentification request --------------------------- #
+# ------------------------------------------------------------------------------------ #
+# Envoyer un premier message avec user, pw (doit être crypté) et id de la série donnée #
+# Utilisation des deux arguments passés au programme Python
+user = f"{sys.argv[1]}"
+pw   = f"{sys.argv[2]}"
+
+# On utilise une ID de série aléatoire 
+randomSeriesID = 19584923584923
+seriesID = f"{randomSeriesValue}"
+
+# On crée le JSON qui contient tous les paramètres d'identification
+authJSON = { 'username': user,
+        'password' : pw,
+        'seriesID' : seriesID }
+
+authAttempt = producer.send(producerTopic, authJSON)
+result = authAttempt.get(timeout=request_timeout)
+producer.flush()
+
+# ------------------------------------------------------------------------------------ #
+# ------------------------- Receive authentification results ------------------------- #
+# ------------------------------------------------------------------------------------ #
+
+# ------------------------------------------------------------------------------------ #
+# -------------------- Transmit a "series ID + serial data" combo -------------------- #
+# ------------------------------------------------------------------------------------ #
+
+# ------------------------------------------------------------------------------------ #
+# --------------------------- Example consumer reception ----------------------------- #
 # ------------------------------------------------------------------------------------ #
 
 for message in consumer:
@@ -53,7 +78,7 @@ for message in consumer:
         message.offset, message.key, message.value))
 
 # ------------------------------------------------------------------------------------ #
-# ------------------------------ Producer transmission ------------------------------- #
+# -------------------------- Example producer transmission --------------------------- #
 # ------------------------------------------------------------------------------------ #
 
 # Producer data transmission - serial data
@@ -67,6 +92,13 @@ while True:
         producer.flush()
         sleep(2)
 
+
+# ------------------------------------------------------------------------------------ #
+# ----------------------------- Close Kafka connections ------------------------------ #
+# ------------------------------------------------------------------------------------ #
+
+# Close the consumer
+consumer.close()
 
 # Close the producer
 producer.close()
