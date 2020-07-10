@@ -23,6 +23,12 @@ consumerTopic = 'micsaAuth'
 consumerGroup = 'pythonScript'
 request_timeout = 3
 
+# Consumer data
+consUser = ""
+consPW = ""
+consSeriesID = 0
+consAuth = False
+
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Producer definition -------------------------------- #
 # ------------------------------------------------------------------------------------ #
@@ -38,7 +44,7 @@ producer = KafkaProducer( \
 consumer = KafkaConsumer(consumerTopic, \
     group_id=consumerGroup, \
     bootstrap_servers=serverIP, \
-    value_deserializer=lambda x: loads(x.decode ('utf-8')))
+    value_deserializer=lambda x: loads(x).decode ('utf-8'))
 
 # ------------------------------------------------------------------------------------ #
 # -------------------------- Send authentification request --------------------------- #
@@ -50,7 +56,7 @@ pw   = f"{sys.argv[2]}"
 
 # On utilise une ID de série aléatoire 
 randomSeriesID = 19584923584923
-seriesID = f"{randomSeriesValue}"
+seriesID = f"{randomSeriesID}"
 
 # On crée le JSON qui contient tous les paramètres d'identification
 authJSON = { 'username': user,
@@ -64,10 +70,20 @@ producer.flush()
 # ------------------------------------------------------------------------------------ #
 # ------------------------- Receive authentification results ------------------------- #
 # ------------------------------------------------------------------------------------ #
+# Recevoir les résultats d'authentification et les traiter
+for authMsg in consumer:
+    consUser = authMsg.username
+    consPW = authMsg.password
+    consSeriesID = authMsg.seriesID
+    consAuth = authMsg.result
+    
+    print("user: %s, password: %s, seriesID: %d, authentification success: %r"\
+        % (authMsg.username, authMsg.password, authMsg.seriesID, authMsg.result))
 
 # ------------------------------------------------------------------------------------ #
 # -------------------- Transmit a "series ID + serial data" combo -------------------- #
 # ------------------------------------------------------------------------------------ #
+
 
 # ------------------------------------------------------------------------------------ #
 # --------------------------- Example consumer reception ----------------------------- #
