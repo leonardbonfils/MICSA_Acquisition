@@ -8,13 +8,15 @@
 import serial
 import string
 import sys
+import time
 from json import dumps
 from json import loads
 from time import sleep
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
+from datetime import datetime
 
-# Parameters
+# Connection parameters
 ser = serial.Serial('/dev/ttyUSB0', 9600)
 serverIP = ['10.194.24.26:9092']
 client_id = 'rasPi'
@@ -28,6 +30,11 @@ consUser = ""
 consPW = ""
 consSeriesID = 0
 consAuth = False
+
+# Program variables
+now = None              # Current date and time
+user = f"{sys.argv[1]}" # First program argument
+pw   = f"{sys.argv[2]}" # Second program argument
 
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Producer definition -------------------------------- #
@@ -49,19 +56,21 @@ consumer = KafkaConsumer(consumerTopic, \
 # ------------------------------------------------------------------------------------ #
 # -------------------------- Send authentification request --------------------------- #
 # ------------------------------------------------------------------------------------ #
+
 # Envoyer un premier message avec user, pw (doit être crypté) et id de la série donnée #
-# Utilisation des deux arguments passés au programme Python
-user = f"{sys.argv[1]}"
-pw   = f"{sys.argv[2]}"
 
 # On utilise une ID de série aléatoire 
 randomSeriesID = 19584923584923
 seriesID = f"{randomSeriesID}"
 
+# Initialisation date actuelle
+update_date()
+
 # On crée le JSON qui contient tous les paramètres d'identification
 authJSON = { 'username': user,
         'password' : pw,
-        'seriesID' : seriesID }
+        'seriesID' : seriesID,
+        'date' : now }
 
 authAttempt = producer.send(producerTopic, authJSON)
 result = authAttempt.get(timeout=request_timeout)
@@ -70,6 +79,7 @@ producer.flush()
 # ------------------------------------------------------------------------------------ #
 # ------------------------- Receive authentification results ------------------------- #
 # ------------------------------------------------------------------------------------ #
+
 # Recevoir les résultats d'authentification et les traiter
 for authMsg in consumer:
     consUser = authMsg.username
@@ -84,6 +94,44 @@ for authMsg in consumer:
 # -------------------- Transmit a "series ID + serial data" combo -------------------- #
 # ------------------------------------------------------------------------------------ #
 
+# Mettre à jour la date
+update_date()
+
+# Envoyer les données
+while True:
+    data = ser.readline()
+    if data:
+        print(data)
+        data = data.replace('\r','').replace('\n','')
+        dataJSON = { 'seriesID' : seriesID, # Il faut qu'on génère des seriesID aléatoires avec une fonction
+                'date' : now, 
+                'data' : data }
+        attempt = producer.send(producerTopic, dataJSON)
+        result = attempt.get(timeout=request_timeout)
+        producer.flush()
+        sleep(2)
+
+# ------------------------------------------------------------------------------------ #
+# ----------------------------- Close Kafka connections ------------------------------ #
+# ------------------------------------------------------------------------------------ #
+
+# Close the consumer
+consumer.close()
+
+# Close the producer
+producer.close()
+
+# ------------------------------------------------------------------------------------ #
+# ------------------------------- Auxiliary functions -------------------------------- #
+# ------------------------------------------------------------------------------------ #
+
+def update_date():
+    now = datetime.now()
+    date = now.strftime("%d/%m/%Y, %H:%M:%S")
+
+# ------------------------------------------------------------------------------------ #
+# ---------------------------------- End of script ----------------------------------- #
+# ------------------------------------------------------------------------------------ #
 
 # ------------------------------------------------------------------------------------ #
 # --------------------------- Example consumer reception ----------------------------- #
@@ -107,18 +155,3 @@ while True:
         result = attempt.get(timeout=request_timeout)
         producer.flush()
         sleep(2)
-
-
-# ------------------------------------------------------------------------------------ #
-# ----------------------------- Close Kafka connections ------------------------------ #
-# ------------------------------------------------------------------------------------ #
-
-# Close the consumer
-consumer.close()
-
-# Close the producer
-producer.close()
-
-# ------------------------------------------------------------------------------------ #
-# ---------------------------------- End of script ----------------------------------- #
-# ------------------------------------------------------------------------------------ #
