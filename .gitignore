@@ -9,4 +9,4 @@ Test.sh
 
 releve.txt
 
-*.vscode
+.vscode/
