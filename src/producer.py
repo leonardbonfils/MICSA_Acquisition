@@ -1,4 +1,4 @@
-none#!/usr/bin/python
+#!/usr/bin/python
 import re
 import serial 
 import json
