@@ -8,7 +8,7 @@ from json import dumps
 from kafka import KafkaProducer
 from serial import Serial
 from datetime import datetime
-from bson import json_util
+from json import json_util
 
 # Data definitions
 ser = serial.Serial('/dev/ttyUSB0', 9600)
