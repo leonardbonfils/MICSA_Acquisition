@@ -15,6 +15,9 @@ from time import sleep
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
 from datetime import datetime
+from crypto.Cipher import AES
+import base64
+import os
 
 # Connection parameters
 ser = serial.Serial('/dev/ttyUSB0', 9600)
@@ -67,8 +70,9 @@ seriesID = f"{randomSeriesID}"
 update_date()
 
 # On crée le JSON qui contient tous les paramètres d'identification
+encryptedPW = encryptionInfo(pw)
 authJSON = { 'username': user,
-        'password' : pw,
+        'password' : encryptedPW,
         'seriesID' : seriesID,
         'date' : now }
 
@@ -83,7 +87,7 @@ producer.flush()
 # Recevoir les résultats d'authentification et les traiter
 for authMsg in consumer:
     consUser = authMsg.username
-    consPW = authMsg.password
+    consEncryptedPW = authMsg.password
     consSeriesID = authMsg.seriesID
     consAuth = authMsg.result
     
@@ -128,6 +132,27 @@ producer.close()
 def update_date():
     now = datetime.now()
     date = now.strftime("%d/%m/%Y, %H:%M:%S")
+
+def encryptionInfo(privateInfo):
+    BLOCK_SIZE = 16
+    PADDING = '{'
+    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+    EncodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
+    secret = os.urandom(BLOCK_SIZE)
+    print ('Encryption key:', secret)
+    cipher = AES.new(secret)
+    encoded = EncodeAES(cipher, privateInfo)
+    print ('Encrypted string:', encoded)
+    return encoded
+
+def decryption(encryptedString):
+	PADDING = '{'
+	DecodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
+	encryption = encryptedString
+	key = ''
+	cipher = AES.new(key)
+	decoded = DecodeAES(cipher, encryption)
+	print ('Decoded string:', decoded)
 
 # ------------------------------------------------------------------------------------ #
 # ---------------------------------- End of script ----------------------------------- #
