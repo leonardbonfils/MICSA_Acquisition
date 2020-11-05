@@ -15,9 +15,10 @@ from time import sleep
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
 from datetime import datetime
-from crypto.Cipher import AES
+from Cryptodome.Cipher import AES
 import base64
 import os
+import random
 
 # Connection parameters
 ser = serial.Serial('/dev/ttyUSB0', 9600)
@@ -38,6 +39,35 @@ consAuth = False
 now = None              # Current date and time
 user = f"{sys.argv[1]}" # First program argument
 pw   = f"{sys.argv[2]}" # Second program argument
+
+# ------------------------------------------------------------------------------------ #
+# ------------------------------- Auxiliary functions -------------------------------- #
+# ------------------------------------------------------------------------------------ #
+
+def update_date():
+    now = datetime.now()
+    date = now.strftime("%d/%m/%Y, %H:%M:%S")
+
+def encryptionInfo(privateInfo):
+    BLOCK_SIZE = 16
+    PADDING = '{'
+    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+    EncodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
+    secret = os.urandom(BLOCK_SIZE)
+    print ('Encryption key:', secret)
+    cipher = AES.new(secret, AES.MODE_ECB)
+    encoded = EncodeAES(cipher, privateInfo)
+    print ('Encrypted string:', encoded)
+    return encoded
+
+def decryption(encryptedString):
+	PADDING = '{'
+	DecodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
+	encryption = encryptedString
+	key = ''
+	cipher = AES.new(key, AES.MODE_ECB)
+	decoded = DecodeAES(cipher, encryption)
+	print ('Decoded string:', decoded)
 
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Producer definition -------------------------------- #
@@ -63,7 +93,7 @@ consumer = KafkaConsumer(consumerTopic, \
 # Envoyer un premier message avec user, pw (doit être crypté) et id de la série donnée #
 
 # On utilise une ID de série aléatoire 
-randomSeriesID = 19584923584923
+randomSeriesID = random.randint(0,9999999)
 seriesID = f"{randomSeriesID}"
 
 # Initialisation date actuelle
@@ -124,35 +154,6 @@ consumer.close()
 
 # Close the producer
 producer.close()
-
-# ------------------------------------------------------------------------------------ #
-# ------------------------------- Auxiliary functions -------------------------------- #
-# ------------------------------------------------------------------------------------ #
-
-def update_date():
-    now = datetime.now()
-    date = now.strftime("%d/%m/%Y, %H:%M:%S")
-
-def encryptionInfo(privateInfo):
-    BLOCK_SIZE = 16
-    PADDING = '{'
-    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
-    EncodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
-    secret = os.urandom(BLOCK_SIZE)
-    print ('Encryption key:', secret)
-    cipher = AES.new(secret)
-    encoded = EncodeAES(cipher, privateInfo)
-    print ('Encrypted string:', encoded)
-    return encoded
-
-def decryption(encryptedString):
-	PADDING = '{'
-	DecodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
-	encryption = encryptedString
-	key = ''
-	cipher = AES.new(key)
-	decoded = DecodeAES(cipher, encryption)
-	print ('Decoded string:', decoded)
 
 # ------------------------------------------------------------------------------------ #
 # ---------------------------------- End of script ----------------------------------- #
