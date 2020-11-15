@@ -1,16 +1,15 @@
 #!/usr/bin/python
-import re
-import serial 
-import json
+import serial
 import time
 from time import sleep
-from json import dumps
 from kafka import KafkaProducer
 
 # Definition des donnees
-ser = serial.Serial('/dev/ttyUSB0', 9600)
-producer = KafkaProducer(bootstrap_servers=['10.194.24.26:9092'], value_serializer=lambda x:dumps(x).encode('utf-8'))
-topic = 'numtest'
+# USB source is "/dev/ttyUSB0" when using custom circuit and "/dev/ttyACMX" (X is number, depends on port used) for Myoware circuit with arduino
+ser = serial.Serial('/dev/ttyACM0')
+ser.flushInput()
+producer = KafkaProducer(bootstrap_servers=['10.194.24.26:9092'])
+topic = 'micsaData'
 
 
 # On envoie en premier les infos de usagé et les informations de la série de données: date, heure et secondes.
@@ -18,12 +17,13 @@ topic = 'numtest'
 
 # Boucle
 while True:
-    data = ser.readline()
-    if data:
-        print(data)
-        data = re.sub('\r |\n','',data)
-        producer.send('numtest', data_numbers_only)
-        sleep(2)
+	try:
+	    data = ser.readline()
+	    if data:
+	    	data = data.rstrip(b'\r\n')
+	    	print(data)
+	    	producer.send(topic, data)
+	except:
+		print("Error read")
 
-  
 
