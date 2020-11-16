@@ -19,7 +19,7 @@ options = {
 
 # UDP CONFIG
 UDP_IP   = '127.0.0.1'
-UDP_PORT = 5000
+UDP_PORT = 5020
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Create Kafka consumer
@@ -34,15 +34,23 @@ value = b'0'
 for message in consumer:
 
     # Value from type byte to float
-    message = float(message.value.decode())     
+    #message = message.value.decode()   
 
     # Compare message to middle point
-    if message > middlePoint:
-        value = b'1'
-    else:
-        value = b'0'
+    #if message > middlePoint:
+    #    value = b'1'
+    #else:
+    #    value = b'0'
 
     # Send value to UDP
-    sock.sendto(value, (UDP_IP, UDP_PORT))
+    #sock.sendto(value, (UDP_IP, UDP_PORT))
 
-    #print(str(message) + ", " + str(value))
+    #message = "5"
+
+    sock.connect((UDP_IP, UDP_PORT))
+    sock.send(message.value)
+
+
+    #sock.sendto(message.value, (UDP_IP, UDP_PORT))
+
+    print(str(message.value) + ", " + str(value))
