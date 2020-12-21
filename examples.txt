@@ -1,0 +1,13 @@
+Example de strcuture pour la vérification 
+
+
+def auth_check()
+
+// Envoit des données d'encryption
+
+while(true) :
+    if( auth_check( param consumer) == 1 )
+        while(true) :
+
+        // partie producer qui envoit les données
+        // On peut consume et afficher

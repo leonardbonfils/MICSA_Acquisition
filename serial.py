@@ -21,7 +21,11 @@ import os
 import random
 
 # Connection parameters
+#define AUTHENTIFIACTION_SUCCESSFUL 1
+#define AUTHENTIFICATION_FAILURE 0 
+
 ser = serial.Serial('/dev/ttyUSB0', 9600)
+ser.flushInput()
 serverIP = ['10.194.24.26:9092']
 client_id = 'rasPi'
 producerTopic = 'micsaData'
