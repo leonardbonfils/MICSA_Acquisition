@@ -5,7 +5,7 @@
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
 
 # Libraries
-import serial
+# import serial
 import string
 import sys
 import time
@@ -158,26 +158,3 @@ producer.close()
 # ------------------------------------------------------------------------------------ #
 # ---------------------------------- End of script ----------------------------------- #
 # ------------------------------------------------------------------------------------ #
-
-# ------------------------------------------------------------------------------------ #
-# --------------------------- Example consumer reception ----------------------------- #
-# ------------------------------------------------------------------------------------ #
-
-for message in consumer:
-    print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,\
-        message.offset, message.key, message.value))
-
-# ------------------------------------------------------------------------------------ #
-# -------------------------- Example producer transmission --------------------------- #
-# ------------------------------------------------------------------------------------ #
-
-# Producer data transmission - serial data
-while True:
-    data = ser.readline()
-    if data:
-        print(data)
-        data = data.replace('\r','').replace('\n','')
-        attempt = producer.send(producerTopic, b'data')
-        result = attempt.get(timeout=request_timeout)
-        producer.flush()
-        sleep(2)
