@@ -54,7 +54,7 @@ function runSession {
 			stty echo
 			# La variable $! nous donne le PID du dernier sous-processus demarre
 			# Le & a la fin de la commande demarre le processus en backgroup (donc en parallele)
-			./menuChild.sh "$1" "$2" &
+			./child.sh "$1" "$2" &
 			CHILD_PID=$!
             #printf "\nProcessus child demarre avec PID: $CHILD_PID\n"
             printf "\nRecording started"

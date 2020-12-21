@@ -6,6 +6,7 @@
 
 # Libraries
 import serial
+##from serial import Serial
 import string
 import sys
 import time
