@@ -8,3 +8,7 @@ awscli-bundle/install
 Test.sh
 
 releve.txt
+
+.vscode/
+
+learning.py
