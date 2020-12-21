@@ -26,8 +26,8 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 consumer = KafkaConsumer(*topics, **options)
 
 # Read calibration file for middle point
-calibrationFile = open("calibrationFile.txt", "r")
-middlePoint = float(calibrationFile.read())
+#calibrationFile = open("calibrationFile.txt", "r")
+#middlePoint = float(calibrationFile.read())
 value = b'0'
 
 # Read kafka topic
@@ -47,8 +47,14 @@ for message in consumer:
 
     #message = "5"
 
+    new_value = message.value.decode()
+    new_value = float(new_value)
+    new_value = int(round(new_value, 0))
+    new_value = str(new_value)
+    new_value = new_value.encode()
+
     sock.connect((UDP_IP, UDP_PORT))
-    sock.send(message.value)
+    sock.send(new_value)
 
 
     #sock.sendto(message.value, (UDP_IP, UDP_PORT))
