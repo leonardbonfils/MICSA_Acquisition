@@ -5,6 +5,8 @@
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
 
 # Libraries
+import platform
+print(platform.system())
 import serial
 import string
 import sys
@@ -62,16 +64,21 @@ def encryptionInfo(privateInfo):
     cipher = AES.new(secret, AES.MODE_ECB)
     encoded = EncodeAES(cipher, privateInfo)
     print ('Encrypted string:', encoded)
-    return encoded
+    return encoded.decode("utf-8")
 
 def decryption(encryptedString):
 	PADDING = '{'
 	DecodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
-	encryption = encryptedString
-	key = ''
+	key = b(BS)
 	cipher = AES.new(key, AES.MODE_ECB)
-	decoded = DecodeAES(cipher, encryption)
+	decoded = DecodeAES(cipher, encryptedString)
 	print ('Decoded string:', decoded)
+
+def hasSerialData():
+    if platform.system() == 'Linux':
+        return True
+    else:
+        return False
 
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Producer definition -------------------------------- #
@@ -104,7 +111,7 @@ seriesID = f"{randomSeriesID}"
 update_date()
 
 # On cree le JSON qui contient tous les parametres d'identification
-encryptedPW = encryptionInfo(pw).decode("utf-8")
+encryptedPW = encryptionInfo(pw)
 authJSON = { 'username': user,
         'password' : encryptedPW,
         'seriesID' : seriesID,
