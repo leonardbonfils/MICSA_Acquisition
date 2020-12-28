@@ -7,7 +7,10 @@
 # Libraries
 import serial
 ##from serial import Serial
+<<<<<<< HEAD
 # import serial
+=======
+>>>>>>> 615209266615bd5b8e7b47a58335e06308bf9080
 import string
 import sys
 import time
@@ -55,11 +58,11 @@ def update_date():
     date = now.strftime("%d/%m/%Y, %H:%M:%S")
 
 def encryptionInfo(privateInfo):
-    BLOCK_SIZE = 16
+    BS = 16
     PADDING = '{'
-    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+    pad = lambda s: bytes(s + (BS - len(s) % BS) * PADDING, 'utf-8')
     EncodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
-    secret = os.urandom(BLOCK_SIZE)
+    secret = os.urandom(BS)
     print ('Encryption key:', secret)
     cipher = AES.new(secret, AES.MODE_ECB)
     encoded = EncodeAES(cipher, privateInfo)
