@@ -5,12 +5,9 @@
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
 
 # Libraries
-<<<<<<< HEAD:producer_serial.py
 import serial
 ##from serial import Serial
-=======
 # import serial
->>>>>>> fbaa149a4f19232eab0533aed30d46da738fb7f9:serial.py
 import string
 import sys
 import time
@@ -99,16 +96,16 @@ consumer = KafkaConsumer(consumerTopic, \
 # -------------------------- Send authentification request --------------------------- #
 # ------------------------------------------------------------------------------------ #
 
-# Envoyer un premier message avec user, pw (doit être crypté) et id de la série donnée #
+# Envoyer un premier message avec user, pw (doit etre crypte) et id de la serie donnee #
 
-# On utilise une ID de série aléatoire 
+# On utilise une ID de serie aleatoire
 randomSeriesID = random.randint(0,9999999)
 seriesID = f"{randomSeriesID}"
 
 # Initialisation date actuelle
 update_date()
 
-# On crée le JSON qui contient tous les paramètres d'identification
+# On cree le JSON qui contient tous les parametres d'identification
 encryptedPW = encryptionInfo(pw)
 authJSON = { 'username': user,
         'password' : encryptedPW,
@@ -123,7 +120,7 @@ producer.flush()
 # ------------------------- Receive authentification results ------------------------- #
 # ------------------------------------------------------------------------------------ #
 
-# Recevoir les résultats d'authentification et les traiter
+# Recevoir les resultats d'authentification et les traiter
 for authMsg in consumer:
     consUser = authMsg.username
     consEncryptedPW = authMsg.password
@@ -137,10 +134,10 @@ for authMsg in consumer:
 # -------------------- Transmit a "series ID + serial data" combo -------------------- #
 # ------------------------------------------------------------------------------------ #
 
-# Mettre à jour la date
+# Mettre a jour la date
 update_date()
 
-# Envoyer les données
+# Envoyer les donnees
 while True:
     data = ser.readline()
     if data:
