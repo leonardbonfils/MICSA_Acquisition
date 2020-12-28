@@ -5,9 +5,6 @@
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
 
 # Libraries
-import platform
-print(platform.system())
-import serial
 import string
 import sys
 import time
@@ -20,14 +17,18 @@ from datetime import datetime
 from Cryptodome.Cipher import AES
 import base64
 import os
+import platform
 import random
+
+if hasSerialData():
+    import serial
+    ser = serial.Serial('/dev/ttyUSB0', 9600)
+    ser.flushInput()
 
 # Connection parameters
 #define AUTHENTIFIACTION_SUCCESSFUL 1
 #define AUTHENTIFICATION_FAILURE 0 
 
-ser = serial.Serial('/dev/ttyUSB0', 9600)
-ser.flushInput()
 serverIP = ['10.194.24.26:9092']
 client_id = 'rasPi'
 producerTopic = 'micsaData'
@@ -144,7 +145,10 @@ update_date()
 
 # Envoyer les donnees
 while True:
-    data = ser.readline()
+    if hasSerialData():
+        data = ser.readline()
+    else:
+        data = b'0000'
     if data:
         print(data)
         data = data.replace('\r','').replace('\n','')
