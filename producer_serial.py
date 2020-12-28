@@ -6,11 +6,6 @@
 
 # Libraries
 import serial
-##from serial import Serial
-<<<<<<< HEAD
-# import serial
-=======
->>>>>>> 615209266615bd5b8e7b47a58335e06308bf9080
 import string
 import sys
 import time
