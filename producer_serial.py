@@ -109,7 +109,7 @@ seriesID = f"{randomSeriesID}"
 update_date()
 
 # On cree le JSON qui contient tous les parametres d'identification
-encryptedPW = encryptionInfo(pw)
+encryptedPW = encryptionInfo(pw).decode("utf-8")
 authJSON = { 'username': user,
         'password' : encryptedPW,
         'seriesID' : seriesID,
