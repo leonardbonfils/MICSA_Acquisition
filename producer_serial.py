@@ -5,12 +5,8 @@
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
 
 # Libraries
-<<<<<<< HEAD:producer_serial.py
 import serial
 ##from serial import Serial
-=======
-# import serial
->>>>>>> fbaa149a4f19232eab0533aed30d46da738fb7f9:serial.py
 import string
 import sys
 import time
@@ -58,11 +54,11 @@ def update_date():
     date = now.strftime("%d/%m/%Y, %H:%M:%S")
 
 def encryptionInfo(privateInfo):
-    BLOCK_SIZE = 16
+    BS = 16
     PADDING = '{'
-    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+    pad = lambda s: bytes(s + (BS - len(s) % BS) * PADDING, 'utf-8')
     EncodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
-    secret = os.urandom(BLOCK_SIZE)
+    secret = os.urandom(BS)
     print ('Encryption key:', secret)
     cipher = AES.new(secret, AES.MODE_ECB)
     encoded = EncodeAES(cipher, privateInfo)
