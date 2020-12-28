@@ -53,6 +53,7 @@ pw   = f"{sys.argv[2]}" # Second program argument
 def update_date():
     now = datetime.now()
     date = now.strftime("%d/%m/%Y, %H:%M:%S")
+    return date
 
 def encryptionInfo(privateInfo):
     BS = 16
@@ -141,19 +142,18 @@ print("\nNow treating authentification\n")
 # ------------------------------------------------------------------------------------ #
 
 print("\nNow sending data to kafka broker")
-# Mettre a jour la date
-update_date()
 
 # Envoyer les donnees
 while True:
     data = ser.readline()
     print("Read one line\n")
     if data:
-        print(data)
         data = data.rstrip(b'\r\n')
-        data.decode("utf-8")
+        data = data.decode("utf-8")
+        print(data)
+        # Mettre a jour la date
         dataJSON = { 'seriesID' : seriesID, # Il faut qu'on génère des seriesID aléatoires avec une fonction
-                'date' : now,
+                'date' : update_date(),
                 'data' : data }
         attempt = producer.send(producerTopic, dataJSON)
         result = attempt.get(timeout=request_timeout)
