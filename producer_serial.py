@@ -118,31 +118,35 @@ producer.flush()
 # ------------------------- Receive authentification results ------------------------- #
 # ------------------------------------------------------------------------------------ #
 
+print("\nNow treating authentification\n")
 # Recevoir les resultats d'authentification et les traiter
-for authMsg in consumer:
-    consUser = authMsg.username
-    consEncryptedPW = authMsg.password
-    consSeriesID = authMsg.seriesID
-    consAuth = authMsg.result
+# for authMsg in consumer:
+#     consUser = authMsg.username
+#     consEncryptedPW = authMsg.password
+#     consSeriesID = authMsg.seriesID
+#     consAuth = authMsg.result
     
-    print("user: %s, password: %s, seriesID: %d, authentification success: %r"\
-        % (authMsg.username, authMsg.password, authMsg.seriesID, authMsg.result))
+#     print("user: %s, password: %s, seriesID: %d, authentification success: %r"\
+#         % (authMsg.username, authMsg.password, authMsg.seriesID, authMsg.result))
 
 # ------------------------------------------------------------------------------------ #
 # -------------------- Transmit a "series ID + serial data" combo -------------------- #
 # ------------------------------------------------------------------------------------ #
 
+print("\nNow sending data to kafka broker")
 # Mettre a jour la date
 update_date()
 
 # Envoyer les donnees
 while True:
     data = ser.readline()
+    print("Read one line\n")
     if data:
         print(data)
-        data = data.replace('\r','').replace('\n','')
+        data = data.rstrip(b'\r\n')
+        data.decode("utf-8")
         dataJSON = { 'seriesID' : seriesID, # Il faut qu'on génère des seriesID aléatoires avec une fonction
-                'date' : now, 
+                'date' : now,
                 'data' : data }
         attempt = producer.send(producerTopic, dataJSON)
         result = attempt.get(timeout=request_timeout)
