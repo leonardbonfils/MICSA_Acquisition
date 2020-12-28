@@ -5,9 +5,6 @@
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
 
 # Libraries
-import platform
-print(platform.system())
-import serial
 import string
 import sys
 import time
@@ -20,14 +17,18 @@ from datetime import datetime
 from Cryptodome.Cipher import AES
 import base64
 import os
+import platform
 import random
+
+if hasSerialData():
+    import serial
+    ser = serial.Serial('/dev/ttyUSB0', 9600)
+    ser.flushInput()
 
 # Connection parameters
 #define AUTHENTIFIACTION_SUCCESSFUL 1
-#define AUTHENTIFICATION_FAILURE 0 
+#define AUTHENTIFICATION_FAILURE 0
 
-ser = serial.Serial('/dev/ttyUSB0', 9600)
-ser.flushInput()
 serverIP = ['10.194.24.26:9092']
 client_id = 'rasPi'
 producerTopic = 'micsaData'
@@ -133,7 +134,7 @@ print("\nNow treating authentification\n")
 #     consEncryptedPW = authMsg.password
 #     consSeriesID = authMsg.seriesID
 #     consAuth = authMsg.result
-    
+#      
 #     print("user: %s, password: %s, seriesID: %d, authentification success: %r"\
 #         % (authMsg.username, authMsg.password, authMsg.seriesID, authMsg.result))
 
@@ -147,6 +148,10 @@ print("\nNow sending data to kafka broker")
 while True:
     data = ser.readline()
     print("Read one line\n")
+    if hasSerialData():
+        data = ser.readline()
+    else:
+        data = b'0000'
     if data:
         data = data.rstrip(b'\r\n')
         data = data.decode("utf-8")
