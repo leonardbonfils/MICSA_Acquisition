@@ -5,6 +5,7 @@
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
 
 # Libraries
+import serial
 import string
 import sys
 import time
@@ -20,10 +21,10 @@ import os
 import platform
 import random
 
-if hasSerialData():
-    import serial
-    ser = serial.Serial('/dev/ttyUSB0', 9600)
-    ser.flushInput()
+#if hasSerialData():
+#   import serial
+ser = serial.Serial('/dev/ttyUSB0', 9600)
+ser.flushInput()
 
 # Connection parameters
 #define AUTHENTIFIACTION_SUCCESSFUL 1
@@ -117,7 +118,7 @@ encryptedPW = encryptionInfo(pw)
 authJSON = { 'username': user,
         'password' : encryptedPW,
         'seriesID' : seriesID,
-        'date' : now }
+        'date' : update_date() }
 
 authAttempt = producer.send(producerTopic, authJSON)
 result = authAttempt.get(timeout=request_timeout)
