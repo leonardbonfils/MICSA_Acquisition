@@ -41,14 +41,6 @@ def encryptionInfo(privateInfo):
     print ('Encrypted string:', encoded)
     return encoded.decode("utf-8")
 
-def decryption(encryptedString):
-	PADDING = '{'
-	DecodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
-	key = b(BS)
-	cipher = AES.new(key, AES.MODE_ECB)
-	decoded = DecodeAES(cipher, encryptedString)
-	print ('Decoded string:', decoded)
-
 def hasSerialData():
     if platform.system() == 'Linux':
         return True
@@ -156,8 +148,9 @@ while True:
         data = data.rstrip(b'\r\n')
         data = data.decode("utf-8")
         print(data)
+        
         # Mettre a jour la date
-        dataJSON = { 'seriesID' : seriesID, # Il faut qu'on génère des seriesID aléatoires avec une fonction
+        dataJSON = { 'seriesID' : seriesID,
                 'date' : update_date(),
                 'data' : data }
         attempt = producer.send(producerTopic, dataJSON)
