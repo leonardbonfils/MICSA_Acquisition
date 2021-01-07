@@ -20,33 +20,6 @@ import os
 import platform
 import random
 
-if hasSerialData():
-    import serial
-    ser = serial.Serial('/dev/ttyUSB0', 9600)
-    ser.flushInput()
-
-# Connection parameters
-#define AUTHENTIFIACTION_SUCCESSFUL 1
-#define AUTHENTIFICATION_FAILURE 0
-
-serverIP = ['10.194.24.26:9092']
-client_id = 'rasPi'
-producerTopic = 'micsaData'
-consumerTopic = 'micsaAuth'
-consumerGroup = 'pythonScript'
-request_timeout = 3
-
-# Consumer data
-consUser = ""
-consPW = ""
-consSeriesID = 0
-consAuth = False
-
-# Program variables
-now = None              # Current date and time
-user = f"{sys.argv[1]}" # First program argument
-pw   = f"{sys.argv[2]}" # Second program argument
-
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Auxiliary functions -------------------------------- #
 # ------------------------------------------------------------------------------------ #
@@ -81,6 +54,33 @@ def hasSerialData():
         return True
     else:
         return False
+
+if hasSerialData():
+    import serial
+    ser = serial.Serial('/dev/ttyUSB0', 9600)
+    ser.flushInput()
+
+# Connection parameters
+#define AUTHENTIFICATION_SUCCESSFUL 1
+#define AUTHENTIFICATION_FAILURE 0
+
+serverIP = ['10.194.24.26:9092']
+client_id = 'rasPi'
+producerTopic = 'micsaData'
+consumerTopic = 'micsaAuth'
+consumerGroup = 'pythonScript'
+request_timeout = 3
+
+# Consumer data
+consUser = ""
+consPW = ""
+consSeriesID = 0
+consAuth = False
+
+# Program variables
+now = None              # Current date and time
+user = f"{sys.argv[1]}" # First program argument
+pw   = f"{sys.argv[2]}" # Second program argument
 
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Producer definition -------------------------------- #
