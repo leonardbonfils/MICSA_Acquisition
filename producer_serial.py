@@ -5,6 +5,7 @@
 # -------------------------- Club SynapsETS - MICSA Project -------------------------- #
 
 # Libraries
+import serial
 import string
 import sys
 import time
@@ -20,6 +21,36 @@ import os
 import platform
 import random
 
+<<<<<<< HEAD
+#if hasSerialData():
+#   import serial
+ser = serial.Serial('/dev/ttyUSB0', 9600)
+ser.flushInput()
+
+# Connection parameters
+#define AUTHENTIFIACTION_SUCCESSFUL 1
+#define AUTHENTIFICATION_FAILURE 0
+
+serverIP = ['10.194.24.26:9092']
+client_id = 'rasPi'
+producerTopic = 'micsaData'
+consumerTopic = 'micsaAuth'
+consumerGroup = 'pythonScript'
+request_timeout = 3
+
+# Consumer data
+consUser = ""
+consPW = ""
+consSeriesID = 0
+consAuth = False
+
+# Program variables
+now = None              # Current date and time
+user = f"{sys.argv[1]}" # First program argument
+pw   = f"{sys.argv[2]}" # Second program argument
+
+=======
+>>>>>>> b11369134a6e9db8278f88e96403cd8a6e81fc49
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Auxiliary functions -------------------------------- #
 # ------------------------------------------------------------------------------------ #
@@ -109,7 +140,7 @@ encryptedPW = encryptionInfo(pw)
 authJSON = { 'username': user,
         'password' : encryptedPW,
         'seriesID' : seriesID,
-        'date' : now }
+        'date' : update_date() }
 
 authAttempt = producer.send(producerTopic, authJSON)
 result = authAttempt.get(timeout=request_timeout)
