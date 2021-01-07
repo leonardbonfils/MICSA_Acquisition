@@ -21,12 +21,6 @@ import os
 import platform
 import random
 
-<<<<<<< HEAD
-#if hasSerialData():
-#   import serial
-ser = serial.Serial('/dev/ttyUSB0', 9600)
-ser.flushInput()
-
 # Connection parameters
 #define AUTHENTIFIACTION_SUCCESSFUL 1
 #define AUTHENTIFICATION_FAILURE 0
@@ -49,8 +43,6 @@ now = None              # Current date and time
 user = f"{sys.argv[1]}" # First program argument
 pw   = f"{sys.argv[2]}" # Second program argument
 
-=======
->>>>>>> b11369134a6e9db8278f88e96403cd8a6e81fc49
 # ------------------------------------------------------------------------------------ #
 # ------------------------------- Auxiliary functions -------------------------------- #
 # ------------------------------------------------------------------------------------ #
@@ -86,7 +78,7 @@ def hasSerialData():
     else:
         return False
 
-if hasSerialData():
+def hasSerialData():
     import serial
     ser = serial.Serial('/dev/ttyUSB0', 9600)
     ser.flushInput()
