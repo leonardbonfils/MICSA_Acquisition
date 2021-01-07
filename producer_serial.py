@@ -171,7 +171,6 @@ while True:
         data = data.rstrip(b'\r\n')
         data = data.decode("utf-8")
         print(data)
-        
         # Mettre a jour la date
         dataJSON = { 'seriesID' : seriesID,
                 'date' : update_date(),
